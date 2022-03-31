@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import _ from 'lodash';
 
 const buildDifference = (file1, file2) => {

@@ -2,22 +2,20 @@ import path from 'path';
 import fs from 'fs';
 import buildDifference from './build.js';
 
-const getPath = (filename) => path.resolve(process.cwd(), filename);
+const rootPath = path.resolve(process.cwd());
 
-const readFile = (file) => {
-  const filePath = getPath(file);
-  const reader = file.startsWith(getPath(filePath)) ? fs.readFileSync(file, 'utf8') : fs.readFileSync(`${getPath(filePath)}/${file}`, 'utf8');
-  if (reader.endsWith('.json')) {
-    return JSON.parse(reader);
+const readFile = (filepath) => {
+  const file = filepath.startsWith(rootPath) ? fs.readFileSync(filepath, 'utf8') : fs.readFileSync(`${rootPath}/${filepath}`, 'utf8');
+  if (filepath.endsWith('.json')) {
+    return JSON.parse(file);
   }
 
-  return 'incorrect file';
+  return 'Incorrect file';
 };
 
 const genDiff = (filePath1, filePath2) => {
-  const file1 = readFile(getPath(filePath1));
-  const file2 = readFile(getPath(filePath2));
-
+  const file1 = readFile(filePath1);
+  const file2 = readFile(filePath2);
   return buildDifference(file1, file2);
 };
 

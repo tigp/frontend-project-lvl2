@@ -16,6 +16,7 @@ const buildDifference = (file1, file2) => {
     if ((_.has(file1, key) && _.has(file2, key) && file1[key] !== file2[key])) {
       return [`- ${key}: ${file1[key]}\n+ ${key}: ${file2[key]}\n`];
     }
+    return diff.join('');
   });
   return `{\n${diff.join('')}}`;
 };

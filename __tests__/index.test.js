@@ -20,5 +20,5 @@ const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', 
 const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 
 test('genDiff', () => {
-  expect(genDiff(file1, file2)).toBe(result);
+  expect(genDiff(readFile(file1.json), readFile(file2.json))).toBe(result);
 });

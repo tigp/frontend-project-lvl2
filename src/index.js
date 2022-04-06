@@ -16,6 +16,7 @@ const readFile = (filepath) => {
 const genDiff = (filePath1, filePath2) => {
   const file1 = readFile(filePath1);
   const file2 = readFile(filePath2);
+
   return buildDifference(file1, file2);
 };
 

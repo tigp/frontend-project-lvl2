@@ -3,22 +3,18 @@ import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import genDiff from '../src/index.js';
 
-const file1 = '__fixtures__/file1.json';
-const file2 = '__fixtures__/file2.json';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const result = `{
-- follow: false
-  host: hexlet.io
-- proxy: 123.234.53.22
-- timeout: 50
-+ timeout: 20
-+ verbose: true
-}`;
 
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
-const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 
-test('genDiff', () => {
-  expect(genDiff(readFile(file1.json), readFile(file2.json))).toBe(result);
+test('gediff', () => {
+  const expected = fs.readFileSync(getFixturePath('expected'), 'utf-8');
+  const test1 = genDiff(getFixturePath('file1.json'), getFixturePath('file2.json'));
+  const test2 = genDiff(getFixturePath('file1.yml'), getFixturePath('file2.yml'));
+  const test3 = genDiff(getFixturePath('file1.yml'), getFixturePath('file2.json'));
+
+  expect(test1).toEqual(expected);
+  expect(test2).toEqual(expected);
+  expect(test3).toEqual(expected);
 });

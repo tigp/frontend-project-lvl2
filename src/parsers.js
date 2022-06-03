@@ -1,19 +1,12 @@
 import yaml from 'js-yaml';
-import path from 'path';
-import fs from 'fs';
 
-const readFile = (filepath) => {
-  const rootPath = path.resolve(process.cwd());
-  const file = filepath.startsWith(rootPath)
-    ? fs.readFileSync(filepath, 'utf8')
-    : fs.readFileSync(`${rootPath}/__fixtures__/${filepath}`, 'utf8');
-  if (filepath.endsWith('.json')) {
-    return JSON.parse(file);
-  } if (filepath.endsWith('.yaml') || filepath.endsWith('.yml')) {
-    return yaml.load(file);
+export default (data, format) => {
+  if (format === '.json') {
+    return JSON.parse(data);
+  }
+  if (format === '.yaml' || format === '.yml') {
+    return yaml.load(data);
   }
 
-  return 'Incorrect file format';
+  throw new Error('Incorrect file format! Please use json or yaml');
 };
-
-export default readFile;

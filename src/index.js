@@ -12,7 +12,7 @@ const readFile = (filepath) => {
     : readFileSync(`${rootPath}/__fixtures__/${filepath}`, 'utf8');
 };
 
-const getFileFormat = (filename) => path.extname(filename);
+const getFileFormat = (filename) => path.extname(filename).slice(1);
 
 export default (filepath1, filepath2, formatName = 'stylish') => {
   const file1 = parsers(readFile(filepath1), getFileFormat(filepath1));

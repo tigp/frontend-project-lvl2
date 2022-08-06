@@ -7,7 +7,7 @@
 
 ## Discription
 
-The Program find the difference between two files and output result in format what you choice. You can use stylish, plain of json format.
+The program find the difference between two files and output result in format what you choice. You can use stylish, plain of json format.
 
 ### Installation
 ```
@@ -22,6 +22,9 @@ gendiff <file1> <file2> --format <format>
 
 ### Demonstration
 [Options](https://asciinema.org/a/499301 "Options")
+
 [Stylish](https://asciinema.org/a/499305 "Stylish")
+
 [Plain](https://asciinema.org/a/499306 "Plain")
+
 [Json](https://asciinema.org/a/499307 "Json")

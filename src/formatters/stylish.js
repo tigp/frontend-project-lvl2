@@ -1,54 +1,43 @@
 import _ from 'lodash';
 
-const valueToString = (value, replacer, depth) => {
-  const iter = (currentValue, currentDepth) => {
-    if (!_.isObject(currentValue)) {
-      return `${currentValue}`;
-    }
+const indent = (depth, spaceCount = 4) => ' '.repeat(spaceCount * depth - 2);
 
-    const currentIndent = replacer.repeat(currentDepth);
-    const bracketIndent = replacer.repeat(currentDepth - 1);
-    const lines = Object
-      .entries(currentValue)
-      .map(([key, val]) => `${currentIndent}${key}: ${iter(val, currentDepth + 1)}`);
+const prepareValue = (value, depth) => {
+  if (!_.isObject(value)) {
+    return `${value}`;
+  }
 
-    return [
-      '{',
-      ...lines,
-      `${bracketIndent}}`,
-    ].join('\n');
-  };
+  const entries = Object.entries(value);
+  const lines = entries.map(([key, val]) => `${indent(depth + 1)}  ${key}: ${prepareValue(val, depth + 1)}`);
 
-  return iter(value, depth);
+  return [
+    '{',
+    ...lines,
+    `${indent(depth)}  }`,
+  ].join('\n');
 };
 
-const formatStylish = (tree) => {
-  const iter = (node, depth) => {
-    const replacer = '    ';
-    const currentIndent = replacer.repeat(depth);
-    const bracketIndent = replacer.repeat(depth - 1);
-    const result = node.flatMap(({
-      type, key, value,
-    }) => {
-      switch (type) {
-        case 'complex':
-          return `${currentIndent.slice(2)}  ${key}: ${iter(value, depth + 1)}`;
-        case 'added':
-          return `${currentIndent.slice(2)}+ ${key}: ${valueToString(value, replacer, depth + 1)}`;
-        case 'removed':
-          return `${currentIndent.slice(2)}- ${key}: ${valueToString(value, replacer, depth + 1)}`;
-        case 'updated':
-          return `${currentIndent.slice(2)}- ${key}: ${valueToString(value.firstValue, replacer, depth + 1)}\n${currentIndent.slice(2)}+ ${key}: ${valueToString(value.secondValue, replacer, depth + 1)}`;
-        case 'unchanged':
-          return `${currentIndent.slice(2)}  ${key}: ${valueToString(value, replacer, depth + 1)}`;
-        default:
-          throw new Error(`Incorrect type ${type}!`);
-      }
-    });
-    return ['{', ...result, `${bracketIndent}}`].join('\n');
-  };
+const formatStylish = (diff) => {
+  const iter = (tree, depth) => tree.map(({ type, key, value }) => {
+    const getValue = (val, char) => `${indent(depth)}${char} ${key}: ${prepareValue(val, depth)}\n`;
 
-  return iter(tree, 1);
+    switch (type) {
+      case 'complex':
+        return `${indent(depth)}  ${key}: {\n${iter(value, depth + 1).join('')}${indent(depth)}  }\n`;
+      case 'added':
+        return getValue(value, '+');
+      case 'removed':
+        return getValue(value, '-');
+      case 'updated':
+        return `${getValue(value.firstValue, '-')}${getValue(value.secondValue, '+')}`;
+      case 'unchanged':
+        return getValue(value, ' ');
+      default:
+        throw new Error(`Incorrect type ${type}!`);
+    }
+  });
+
+  return `{\n${iter(diff, 1).join('')}}`;
 };
 
 export default formatStylish;
